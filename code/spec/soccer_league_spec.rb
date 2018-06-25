@@ -1,5 +1,5 @@
 require 'minitest/autorun'
-require_relative '../soccer_league.rb'
+require_relative '../lib/soccer_league.rb'
 
 describe League, 'at the start of the season' do
   let(:league) { League.new }

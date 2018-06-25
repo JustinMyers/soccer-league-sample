@@ -9,6 +9,7 @@ class League
   # this is here just for fun
   def team_names
     @teams.keys
+    
   end
   
   # the input is a string formatted like this:
