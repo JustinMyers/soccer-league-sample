@@ -9,3 +9,5 @@ lines.each do |line|
 end
 
 puts league.standings
+
+league.save

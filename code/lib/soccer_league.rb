@@ -1,3 +1,5 @@
+require 'erb'
+
 class League
   attr_reader :teams
   
@@ -22,11 +24,11 @@ class League
     @teams[team_1_results[:name]] ||= Team.new(team_1_results[:name])
     @teams[team_2_results[:name]] ||= Team.new(team_2_results[:name])
     
-    @teams[team_1_results[:name]].play_match( team_1_results[:score], team_2_results[:score] )
-    @teams[team_2_results[:name]].play_match( team_2_results[:score], team_1_results[:score] )
+    @teams[team_1_results[:name]].play_match( team_1_results[:score], team_2_results[:score], team_2_results[:name] )
+    @teams[team_2_results[:name]].play_match( team_2_results[:score], team_1_results[:score], team_1_results[:name] )
   end
   
-  def standings
+  def sort_teams
     sorted_teams = teams.values.sort do |a, b| 
       [b.pts, a.name] <=> [a.pts, b.name]
     end
@@ -34,15 +36,22 @@ class League
     standing = 0
     previous_point_total = nil
     count = 0
-    
-    standings = []
-    
+
     sorted_teams.each do |team|
       count += 1
       if team.pts != previous_point_total
         standing = count
       end
       previous_point_total = team.pts
+      
+      yield( team, standing )
+    end
+  end
+  
+  def standings
+    standings = []
+    
+    sort_teams do |team, standing|
       standings << "#{ standing }. #{team.name}, #{team.pts} #{ (team.pts == 1 ? 'pt' : 'pts' )}"
     end
     
@@ -66,25 +75,122 @@ class League
     
     { name: name, score: score }
   end
+  
+  
+  
+  public
+  
+  include ERB::Util
+  
+  def overview_page
+    %{
+      <html>
+        <head><title>Soccer League!</title></head>
+        <body>
+          <h2>Standings Overview</h2>
+          <table>
+            <tr>
+              <th>Pos.</th>
+              <th>Team</th>
+              <th>MP</th>
+              <th>W</th>
+              <th>D</th>
+              <th>L</th>
+              <th>GF</th>
+              <th>GA</th>
+              <th>GD</th>
+              <th>Pts</th>
+            </tr>
+            <% sort_teams do |team, standing| %>
+              <tr>
+                <td><%= standing %></td>
+                <td><a href="<%= team.name.downcase.gsub(' ', '_')%>_games.html"><%= team.name %></a></td>
+                <td><%= team.mp %></td>
+                <td><%= team.w %></td>
+                <td><%= team.d %></td>
+                <td><%= team.l %></td>
+                <td><%= team.gf %></td>
+                <td><%= team.ga %></td>
+                <td><%= team.gd %></td>
+                <td><%= team.pts %></td>
+              </tr>
+            <% end %>
+          </table>
+        </body>
+      </html>
+    }
+  end
+  
+  def team_page(team)
+    %{
+      <html>
+      <head><title>Soccer League!</title></head>
+      <body>
+        <h2><%= team.name %> Matches</h2>
+        <table>
+          <% team.matches.each do |match| %>
+            <tr>
+              <td><a href="<%= team.name.downcase.gsub(' ', '_')%>_games.html"><%= team.name %></a></td>
+              <td><%= match[:team_score] %></td>
+              <td><%= match[:opponent_score] %></td>
+              <td><a href="<%= match[:opponent_name].downcase.gsub(' ', '_')%>_games.html"><%= match[:opponent_name] %></a></td>
+            </tr>
+          <% end %>
+        </table>
+        <p><a href="league_standings.html">Home</a></p>
+      </body>
+      </html>
+    }
+  end
+  
+  # This page helped me understand ERB rendering
+  # http://www.stuartellis.name/articles/erb/
+  def save
+    require 'fileutils'
+    
+    FileUtils.mkdir_p(File.dirname('./html_standings/.'))
+    
+    File.open('./html_standings/league_standings.html', "w+") do |f|
+      f.write(ERB.new(overview_page).result(binding))
+    end
+    
+    teams.values.each do |team|
+      File.open("./html_standings/#{team.name.downcase.gsub(' ', '_')}_games.html", "w+") do |f|
+        f.write(ERB.new(team_page(team)).result(binding))
+      end
+    end
+  end
+  
 end
 
 class Team
   attr_accessor :name
   
   attr_reader :w, :d, :l, :gf, :ga
+  
   # w - wins
   # d - draws
   # l - losses
   # gf - goals for
   # ga - goals against
   
+  attr_reader :matches
+  
   def initialize(name)
     # start with all the stats to zero
     @mp = @w = @l = @d = @gf = @ga = 0
     @name = name
+    
+    @matches = []
   end
   
-  def play_match( team_score, opponent_score )
+  def play_match( team_score, opponent_score, opponent_name = 'opponent' )
+    @matches << {
+      team_score: team_score,
+      opponent_score: opponent_score,
+      opponent_name: opponent_name
+    }
+    
     # record goals for
     @gf += team_score
     
