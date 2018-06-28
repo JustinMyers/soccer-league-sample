@@ -2,11 +2,11 @@
 
 ### Basic usage
 
-git clone https://github.com/JustinMyers/soccer-league-sample.git
-cd soccer-league-sample/code
-bundle (install the bundler gem if you need to)
-rake (run the tests)
-ruby league_standings.rb sample-input.txt (try the script)
+git clone https://github.com/JustinMyers/soccer-league-sample.git  
+cd soccer-league-sample/code  
+bundle (install the bundler gem if you need to)  
+rake (run the tests)  
+ruby league_standings.rb sample-input.txt (try the script)  
 
 ### Development
 
