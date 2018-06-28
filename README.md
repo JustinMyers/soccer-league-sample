@@ -14,13 +14,13 @@ All development happens in the code directory.
 
 The Gemfile provided has some testing faclities in it. The tests can be run by calling `bundle exec rake` from the code directory. Running guard with `bundle exec guard` will run the tests when a file is changed.
 
-The league_standings.rb file is not tested. It is quite small and I didn't have a good strategy for testing it.
+The league_standings.rb file is not tested. It is quite small and I didn't have a good strategy for testing it. I would love to talk with other developers to hear what they'd suggest. :)
 
 ### Silliness
 
 With the --html flag you can force the script to output some HTML files which show the matches and standings.
 
-With the --strict flag you can force the script to use the goal difference stat to break point ties.
+With the --strict flag you can force the script to use the goal difference stat to break point ties, like the FIFA World Cup.
 
 ### Instructions
 
