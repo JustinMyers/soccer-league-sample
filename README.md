@@ -1,6 +1,16 @@
 ## Soccer League Code Sample
 
+### Basic usage
+
+git clone https://github.com/JustinMyers/soccer-league-sample.git
+cd soccer-league-sample/code
+bundle (install the bundler gem if you need to)
+rake (run the tests)
+ruby league_standings.rb sample-input.txt (try the script)
+
 ### Development
+
+All development happens in the code directory.
 
 The Gemfile provided has some testing faclities in it. The tests can be run by calling `bundle exec rake` from the code directory. Running guard with `bundle exec guard` will run the tests when a file is changed.
 
