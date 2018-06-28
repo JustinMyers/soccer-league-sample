@@ -5,6 +5,7 @@ source "https://rubygems.org"
 git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
 
 group :development do
+  gem 'rake'
   gem 'minitest'
   gem 'guard' # NOTE: this is necessary in newer versions
   gem 'guard-minitest'

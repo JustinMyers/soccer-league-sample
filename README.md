@@ -1,29 +1,29 @@
-## Instructions
+## Soccer League Code Sample
 
+### Development
+
+The Gemfile provided has some testing faclities in it. The tests can be run by calling `bundle exec rake` from the code directory. Running guard with `bundle exec guard` will run the tests when a file is changed.
+
+The league_standings.rb file is not tested. It is quite small and I didn't have a good strategy for testing it.
+
+### Silliness
+
+With the --html flag you can force the script to output some HTML files which show the matches and standings.
+
+With the --strict flag you can force the script to use the goal difference stat to break point ties.
+
+### Instructions
+
+From inside the code directory:
 
 #### Pipe in results
 ➜ cat sample-input.txt | ruby league_standings.rb
-1. Tarantulas, 6 pts
-2. Lions, 5 pts
-3. FC Awesome, 1 pt
-3. Snakes, 1 pt
-5. Grouches, 0 pts
 
 #### List files as parameters
 ➜ ruby league_standings.rb sample-input.txt
-1. Tarantulas, 6 pts
-2. Lions, 5 pts
-3. FC Awesome, 1 pt
-3. Snakes, 1 pt
-5. Grouches, 0 pts
 
 #### Redirect
 ➜ ruby league_standings.rb < sample-input.txt
-1. Tarantulas, 6 pts
-2. Lions, 5 pts
-3. FC Awesome, 1 pt
-3. Snakes, 1 pt
-5. Grouches, 0 pts
 
 #### If no file or STDIN is provided you can type in results
 ➜ ruby league_standings.rb  
@@ -32,16 +32,7 @@ Tarantulas 1, FC Awesome 0
 Lions 1, FC Awesome 1  
 Tarantulas 3, Snakes 1  
 Lions 4, Grouches 0  
-1. Tarantulas, 6 pts  
-2. Lions, 5 pts  
-3. FC Awesome, 1 pt  
-3. Snakes, 1 pt  
-5. Grouches, 0 pts
+CTRL+D
 
 #### You can list multiple files
 ➜ ruby league_standings.rb sample-input.txt sample-input.txt
-1. Tarantulas, 12 pts
-2. Lions, 10 pts
-3. FC Awesome, 2 pts
-3. Snakes, 2 pts
-5. Grouches, 0 pts

@@ -4,7 +4,10 @@ class League
   attr_reader :teams
   
   # teams is a hash where the key is the team name and the value is a Team object
-  def initialize
+  def initialize( strict_standings = false)
+    # strict standings use goal difference when points are tied.
+    @strict_standings = strict_standings
+    
     @teams = {}
   end
   
@@ -30,19 +33,33 @@ class League
   
   def sort_teams
     sorted_teams = teams.values.sort do |a, b| 
-      [b.pts, a.name] <=> [a.pts, b.name]
+      if @strict_standings
+        [b.pts, b.gd, a.name] <=> [a.pts, a.gd, b.name]
+      else
+        [b.pts, a.name] <=> [a.pts, b.name]
+      end
     end
     
     standing = 0
     previous_point_total = nil
+    previous_goal_difference = nil
     count = 0
 
     sorted_teams.each do |team|
       count += 1
-      if team.pts != previous_point_total
-        standing = count
+      if @strict_standings
+        # consider goal difference
+        if (team.pts != previous_point_total) or (team.gd != previous_goal_difference)
+          standing = count
+        end
+      else
+        # simple mode. ignore goal difference.
+        if team.pts != previous_point_total
+          standing = count
+        end
       end
       previous_point_total = team.pts
+      previous_goal_difference = team.gd
       
       yield( team, standing )
     end

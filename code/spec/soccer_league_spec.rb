@@ -46,6 +46,22 @@ describe League, 'after the whole season' do
   end
 end
 
+describe League, 'a STRICT league after the whole season' do
+  let(:league) do
+    l = League.new( true ) # this is for a STRICT league
+    l.play_match('Lions 3, Snakes 3')
+    l.play_match('Tarantulas 1, FC Awesome 0')
+    l.play_match('Lions 1, FC Awesome 1')
+    l.play_match('Tarantulas 3, Snakes 1')
+    l.play_match('Lions 4, Grouches 0')
+    l
+  end
+  
+  it 'should output tied POINTS rankings in order of GOAL DIFFERENCE' do
+    league.standings.must_equal "1. Tarantulas, 6 pts\n2. Lions, 5 pts\n3. FC Awesome, 1 pt\n4. Snakes, 1 pt\n5. Grouches, 0 pts"
+  end
+end
+
 describe Team, 'at the start of the season' do
   let(:team) { Team.new('Developers') }
 
